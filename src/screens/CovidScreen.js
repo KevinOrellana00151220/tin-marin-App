@@ -8,39 +8,18 @@ import {
 } from 'react-native';
 import { getAllCovidRecommendations } from '../api/covid';
 import { Text } from 'react-native-elements';
-import GenericCard from '../components/GenericCard';
-import Colors from '../constants/Colors';
 import { ScrollView } from 'react-native-gesture-handler';
 import { size } from 'lodash';
 
 /**
- * Pantalla que muestra una lista de tarjetas sobre recomendaciones sobre el COVID-19
- * @param {prop} navigation - Contiene información básica de navegación
- * @property {Array<Object>} covid - Lista que contiene Objetos con estructura de una Recomendación Covid-19.
- * @property {function} setCovid - Método de acceso indirecto para modificar la propieadad covid.
- * @property {boolean} loading - Variable auxiliar para indicar si ya hay respuesta del servidor para cargar la vista que contiene.
- * @property {function} setLoading - Método de acceso indirecto para modificar la propieadad loading.
- * @property {boolean} swapColor - Variable auxiliar para cambiar color de tarjetas cada posición: (índice mod 2).
- * @property {function} useEffect - Hook de React que permite realizar tareas asíncronas a la vista.
- * @property {Promise} getAllCovidRecommendations - {@link getAllCovidRecommendations} | Promesa que devuelve la información dependiendo la respuesta del servidor.
- * @property {function} size - Función de la librería lodash | Devuelve el tamaño de una colección.
- * @property {function} useState - Hook de React que permite crear una variable de estado con su método accesor.
- * @see https://reactnavigation.org/docs/navigation-prop/
- * @see https://reactjs.org/docs/hooks-effect.html
- * @see https://lodash.com/docs/4.17.15#size
- * @see https://reactjs.org/docs/hooks-state.html
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
- * @return {SafeAreaView} Regresa una layout con la maquetación de la pantalla
+ * Pantalla que muestra una lista de recomendaciones sobre el COVID-19
  */
 const CovidScreen = ({ navigation }) => {
-  // const [covidInfo, setCovidInfo] = useState(null);
   const [covid, setCovid] = useState(null);
   const [loading, setLoading] = useState(true);
-  let swapColor = true;
 
   useEffect(() => {
     getAllCovidRecommendations().then((response) => {
-      // console.log(response);
       setCovid(response);
       setLoading(false);
     });
@@ -61,13 +40,19 @@ const CovidScreen = ({ navigation }) => {
           <Text style={styles.text}>No se encontraron Recomendaciones</Text>
         ) : (
           <View style={styles.view}>
-            <Text style={styles.title}>Recomendaciones para el Covid-19</Text>
-            <View style={styles.line}></View>
-            <CovidList
-              covidRecs={covid}
-              navigation={navigation}
-              swapColor={swapColor}
+            {/* Imagen en la parte superior */}
+            <Image
+              source={{
+                uri: 'https://i.ibb.co/pPsMJc2/imagen-2024-10-25-094058375-removebg-preview.png',
+              }}
+              style={styles.image}
             />
+
+            <Text style={styles.title}>Salvaguarda</Text>
+            <View style={styles.line}></View>
+
+            {/* Muestra solo los títulos en una lista con puntos */}
+            <CovidList covidRecs={covid} />
           </View>
         )}
       </ScrollView>
@@ -76,38 +61,19 @@ const CovidScreen = ({ navigation }) => {
 };
 
 /**
- * Componente que se utiliza para iterar las tarjetas
- * @param {prop} navigation
- * @param {Array<string>} covidRecs - Contiene la información del estado covid.
- * @param {boolean} swapColor - Variable de control para intercambiar color.
- * @see https://reactnavigation.org/docs/navigation-prop/
- * @return {GenericCard} Retorna una lista de tarjetas de tipo {@link GenericCard}
+ * Componente que itera sobre los títulos y los muestra con un punto
  */
-const CovidList = ({ navigation, covidRecs, swapColor }) => {
-  return covidRecs.map((covid, index) => {
-    if (index % 2 === 0) swapColor = !swapColor;
-    return (
-      <GenericCard
-        key={index}
-        id={covid._id}
-        title={covid.title}
-        description={covid.description}
-        imageURL={covid.image}
-        steps={covid.steps}
-        color={swapColor ? Colors.green : Colors.magenta}
-        textBtn="Saber Más"
-        navigation={navigation}
-        screenName="InfoCovid"
-      />
-    );
-  });
+const CovidList = ({ covidRecs }) => {
+  return covidRecs.map((covid, index) => (
+    <View key={index} style={styles.item}>
+      <Text style={styles.bullet}>{`\u2022`}</Text>
+      <Text style={styles.titleItem}>{covid.title}</Text>
+    </View>
+  ));
 };
 
 export default CovidScreen;
 
-/**
- * @ignore
- */
 const styles = StyleSheet.create({
   view: {
     flexDirection: 'column',
@@ -121,11 +87,11 @@ const styles = StyleSheet.create({
     color: '#566573',
     textAlign: 'center',
   },
-
   line: {
     height: 1,
     width: '90%',
     backgroundColor: '#D5D8DC',
+    marginBottom: 20,
   },
   text: {
     fontFamily: 'NunitoSans-Bold',
@@ -133,4 +99,31 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'gray',
   },
+  image: {
+    width: '70%',
+    height: 300,
+    resizeMode: 'cover',
+    marginBottom: 0,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    width: '90%',  // Se ajusta el ancho total de la vista
+    justifyContent: 'flex-start',  // Alinea el contenido al principio
+  },
+  bullet: {
+    fontSize: 18,
+    marginRight: 10,
+    color: '#333',
+  },
+  titleItem: {
+    flex: 1,  // Asegura que el texto ocupe todo el espacio disponible
+    fontSize: 18,
+    color: '#333',
+    textAlign: 'left',  // Asegura que el texto esté alineado a la izquierda
+  },
 });
+
+
+

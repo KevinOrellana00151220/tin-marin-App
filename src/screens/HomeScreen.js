@@ -80,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
               source={covidicon2}
             />
             <View style={styles.textContainer}>
-              <Text style={styles.textYellow}>Recomendaciones Covid-19</Text>
+              <Text style={styles.textYellow}>Salvaguarda</Text>
               <Text style={styles.text2}>
                 Toma en cuenta estas recomendaciones para venir al museo
               </Text>
@@ -158,7 +158,7 @@ const HomeScreen = ({ navigation }) => {
               source={sitiosicon}
             />
             <View style={styles.textContainer}>
-              <Text style={styles.textMorado}>Sitios de Interés</Text>
+              <Text style={styles.textMorado}>Dinamicas</Text>
               <Text style={styles.text2}>
                 Si deseas profundizar un poco más en otros temas relevantes
               </Text>
